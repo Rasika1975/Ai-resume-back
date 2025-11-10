@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: Arial, sans-serif;
+      padding: 40px;
+      color: #333;
+      line-height: 1.6;
+    }
+    .header {
+      text-align: center;
+      border-bottom: 3px solid #2563eb;
+      padding-bottom: 20px;
+      margin-bottom: 30px;
+    }
+    .header h1 {
+      font-size: 32px;
+      color: #1e40af;
+      margin-bottom: 10px;
+    }
+    .contact { font-size: 12px; color: #666; margin-top: 8px; }
+    .section { margin-bottom: 25px; }
+    .section-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #1e40af;
+      border-bottom: 2px solid #ddd;
+      padding-bottom: 5px;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+    }
+    .item { margin-bottom: 15px; }
+    .item h3 { font-size: 16px; font-weight: bold; margin-bottom: 3px; }
+    .item .meta { font-size: 12px; color: #666; margin-bottom: 5px; }
+    .item p { font-size: 13px; color: #555; white-space: pre-line; }
+    .skills { display: flex; flex-wrap: wrap; gap: 10px; }
+    .skill-tag {
+      background: #dbeafe;
+      color: #1e40af;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>{{fullName}}</h1>
+    <div class="contact">
+      {{#if email}}{{email}}{{/if}}
+      {{#if phone}} | {{phone}}{{/if}}
+      {{#if location}} | {{location}}{{/if}}
+      {{#if linkedin}}<br>{{linkedin}}{{/if}}
+      {{#if website}} | {{website}}{{/if}}
+    </div>
+  </div>
+
+  {{#if experience.length}}
+  <div class="section">
+    <div class="section-title">Work Experience</div>
+    {{#each experience}}
+    <div class="item">
+      <h3>{{jobTitle}}</h3>
+      <div class="meta">{{company}} | {{duration}}</div>
+      <p>{{description}}</p>
+    </div>
+    {{/each}}
+  </div>
+  {{/if}}
+
+  {{#if education.length}}
+  <div class="section">
+    <div class="section-title">Education</div>
+    {{#each education}}
+    <div class="item">
+      <h3>{{degree}}</h3>
+      <div class="meta">{{school}} | {{year}}</div>
+      {{#if details}}<p>{{details}}</p>{{/if}}
+    </div>
+    {{/each}}
+  </div>
+  {{/if}}
+
+  {{#if skills.length}}
+  <div class="section">
+    <div class="section-title">Skills</div>
+    <div class="skills">
+      {{#each skills}}
+      <span class="skill-tag">{{this}}</span>
+      {{/each}}
+    </div>
+  </div>
+  {{/if}}
+
+  {{#if custom.length}}
+  {{#each custom}}
+  {{#if title}}
+  <div class="section">
+    <div class="section-title">{{title}}</div>
+    <p>{{content}}</p>
+  </div>
+  {{/if}}
+  {{/each}}
+  {{/if}}
+</body>
+</html>
