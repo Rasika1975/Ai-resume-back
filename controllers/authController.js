@@ -5,25 +5,59 @@ import jwt from "jsonwebtoken";
 export const registerUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
-    const hashed = await bcrypt.hash(password, 10);
 
+    if (!name || !email || !password) {
+      return res.status(400).json({ error: "Name, email, and password are required" });
+    }
+
+    const existing = await User.findOne({ email });
+    if (existing) {
+      return res.status(409).json({ error: "Email already registered" });
+    }
+
+    const hashed = await bcrypt.hash(password, 10);
     const user = await User.create({ name, email, password: hashed });
-    res.json({ message: "User Registered", user });
+
+    const secret = process.env.JWT_SECRET;
+    if (!secret) {
+      // Registered but cannot issue token; tell client explicitly.
+      return res.status(201).json({ message: "User Registered", user });
+    }
+
+    const token = jwt.sign({ id: user._id }, secret, { expiresIn: "7d" });
+    return res.status(201).json({ message: "User Registered", user, token });
     
   } catch (error) {
+    // Handle duplicate key or validation errors
+    if (error?.code === 11000) {
+      return res.status(409).json({ error: "Email already registered" });
+    }
     res.status(400).json({ error: "Registration failed" });
   }
 };
 
 export const loginUser = async (req, res) => {
-  const { email, password } = req.body;
+  try {
+    const { email, password } = req.body;
 
-  const user = await User.findOne({ email });
-  if (!user) return res.status(404).json({ error: "User not found" });
+    if (!email || !password) {
+      return res.status(400).json({ error: "Email and password are required" });
+    }
 
-  const match = await bcrypt.compare(password, user.password);
-  if (!match) return res.status(400).json({ error: "Incorrect password" });
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ error: "User not found" });
 
-  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
-  res.json({ token, user });
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) return res.status(400).json({ error: "Incorrect password" });
+
+    const secret = process.env.JWT_SECRET;
+    if (!secret) {
+      return res.status(500).json({ error: "Server misconfigured: JWT secret missing" });
+    }
+
+    const token = jwt.sign({ id: user._id }, secret, { expiresIn: "7d" });
+    res.json({ token, user });
+  } catch (err) {
+    res.status(500).json({ error: "Login failed" });
+  }
 };
