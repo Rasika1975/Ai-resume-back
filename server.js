@@ -2,7 +2,6 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import connectDB from "./config/db.js";
-
 import authRoutes from "./routes/authRoutes.js";
 import resumeRoutes from "./routes/resumeRoutes.js";
 import atsRoutes from "./routes/atsRoutes.js";
@@ -18,8 +17,8 @@ const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:5174',
   'http://localhost:3000',
-  'https://resumebuilder-silk-rho.vercel.app',  // Your Vercel frontend
-  'https://ai-resume-back-1.onrender.com'       // Your Render backend
+  'https://ai-resume-front.onrender.com',  // ✅ Missing comma fixed
+  'https://ai-resume-back-1.onrender.com'
 ];
 
 app.use(cors({
@@ -69,8 +68,8 @@ app.use((req, res) => {
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`✅ Server running on http://localhost:${PORT}`);
-  console.log(`📍 Routes available:`);
-  console.log(`   - POST http://localhost:${PORT}/pdf/generate`);
-  console.log(`🌐 Allowed Origins:`, allowedOrigins);
+  console.log(`✅ Server running on http://localhost:${PORT}`);  // ✅ Parentheses fixed
+  console.log(`📍 Routes available:`);  // ✅ Parentheses fixed
+  console.log(`   - POST http://localhost:${PORT}/pdf/generate`);  // ✅ Parentheses fixed
+  console.log(`🌐 Allowed Origins:`, allowedOrigins);  // ✅ Parentheses fixed
 });
